@@ -18,9 +18,9 @@
 <img src="DFA.svg" width="1001"  alt="DFA png here"/>
 
 2. Язык {w | |w|aab = |w|bba & |w|aba = 0}. Алфавит {a,b}.
-PDA:
+Язык регулярный, DFA:
 
-<img src="PDA.svg" width="1001"  alt="PDA png here"/>
+<img src="DFA1.svg" width="1001"  alt="DFA png here"/>
 
 3. Язык слов {w1w2w3 | |w1| = |w3| > |w2| & |w1|ab = |w3|ba}. Алфавит {a,b,c}.
 
