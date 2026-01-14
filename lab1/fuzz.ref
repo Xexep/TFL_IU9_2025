@@ -1,0 +1,63 @@
+$ENTRY Go {
+
+   = <Prout <fuzztest 10 'z' 2000>>
+
+}
+
+fuzztest{
+    0'z't.len = 1;
+    t.count 'z' t.len = <Mul <test1<red2 <RandomWord t.len>>>  <fuzztest <Sub t.count 1> 'z' t.len>  >;
+}
+
+red2{
+    e.word = <Prout <Reduce2 'z' e.word> ' = ' <Reduce2 'z' <Reduce1 'z' e.word>> >   <Reduce2 'z' e.word> 'z' <Reduce2 'z' <Reduce1 'z' e.word>>
+}
+
+test1{
+    e.res 'z' e.res = 1;
+    e.res1 'z' e.res2 = 0;
+    e.other = 'err'
+}
+
+RandomWord{
+ 0 = ;
+    t.letterCount = <Pick <Mod <Random 1> 3>> <RandomWord <Sub t.letterCount 1>> 
+}
+
+Pick{
+    0 = 'a';
+    1 = 'b';
+    2 = 'c';
+}
+
+Trs1{
+    e.p 'aa' e.s = e.p e.s;
+    e.p 'cccc' e.s = e.p 'bb' e.s;
+    e.p 'acb' e.s = e.p 'cc' e.s ;
+    e.p 'aabbcc' e.s = e.p 'abc' e.s;
+    e.p 'baabaac' e.s = e.p 'cbba' e.s;
+    e.p = 1
+}
+Reduce1{
+    e.prev 'z' 1 = e.prev;
+    e.prev 'z' e.next  = /*<Prout e.next \n>*/ <Reduce1 e.next 'z' <Trs1 e.next>>
+}
+
+Trs2{
+    e.p 'aa' e.s = e.p e.s;
+    e.p 'acb' e.s = e.p 'cc' e.s;
+    e.p 'acc' e.s = e.p 'cb' e.s;
+    e.p 'cbb' e.s = e.p 'bbb' e.s;
+    e.p 'bbbb' e.s = e.p 'bb' e.s;
+    e.p 'abb' e.s = e.p 'bb' e.s;
+    e.p 'ccc' e.s = e.p 'bbb' e.s;
+    e.p 'ccb' e.s = e.p 'bbb' e.s;
+    e.p 'bc' e.s = e.p 'bb' e.s;
+    e.p 'bba' e.s = e.p 'bb' e.s;
+    e.p = 2
+}
+
+Reduce2{
+    e.prev 'z' 2 = e.prev;
+    e.prev 'z' e.next  = /*<Prout e.next \n>*/ <Reduce2 e.next 'z' <Trs2 e.next>>
+}

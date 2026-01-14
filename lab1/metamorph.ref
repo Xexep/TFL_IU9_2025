@@ -1,0 +1,109 @@
+
+$ENTRY Go {
+
+   = <Prout <metamorphTest 10 'z' 30 >>
+ 
+}
+
+metamorphTest{
+    0'z't.len = 1;
+    t.count 'z' t.len = <Mul <testcheck<test1 <RandomWord t.len>>> <metamorphTest <Sub t.count 1> 'z' t.len>>
+}
+
+testcheck {
+    '+0' = 1;
+    '00' = 1;
+    e.other = 0;
+}
+
+test1{
+    e.word = <invariants e.word 'z' <RandomChain <Mod <Random 1>100> e.word>>
+}
+
+invariants{
+    e.word 'z' e.changed = <Prout e.word '===' e.changed \n>   <Compare <len 0 e.word> <len 0 e.changed>> <Compare <countbc 0 e.word> <countbc 0 e.changed>>
+}
+
+len{
+    t.count = t.count;
+    t.count s.s e.w = <len <Add t.count 1> e.w>
+}
+
+RandomChain{
+    0 e.word = e.word;
+    t.count e.word = <RandomChain <Sub t.count 1> <Trs2 <Mod <Random 1> 10> e.word>> 
+}
+
+countbc{
+    1 = 1;
+    0 = 0;
+    1 'a' e.s = <countbc 1 e.s >;
+    0 'a' e.s = <countbc 0 e.s >;
+    1 'b' e.s = <countbc 0 e.s >;
+    0 'b' e.s = <countbc 1 e.s >;
+    1 'c' e.s = <countbc 0 e.s >;
+    0 'c' e.s = <countbc 1 e.s >;
+}
+
+Trs2{
+    0 e.p 'aa' e.s = <rewriteRandom 'aa' 'z' '' 'z' e.p 'aa' e.s>;
+    1 e.p 'acb' e.s = <rewriteRandom 'acb' 'z' 'cc' 'z' e.p 'acb' e.s>;
+    2 e.p 'acc' e.s = <rewriteRandom 'acc' 'z' 'cb' 'z' e.p 'acc' e.s>;
+    3 e.p 'cbb' e.s = <rewriteRandom 'cbb' 'z' 'bbb' 'z' e.p 'cbb' e.s>;
+    4 e.p 'bbbb' e.s = <rewriteRandom 'bbbb' 'z' 'bb' 'z' e.p 'bbbb' e.s>;
+    5 e.p 'abb' e.s = <rewriteRandom 'bb' 'z' 'bb' 'z' e.p 'abb' e.s>;
+
+    6 e.p 'ccc' e.s = <rewriteccc <Mod <Random 1>3> e.p 'ccc' e.s >;
+
+    7 e.p 'ccb' e.s = <rewriteRandom 'ccb' 'z' 'bbb' 'z' e.p 'ccb' e.s>;
+    8 e.p 'bc' e.s = <rewriteRandom 'bc' 'z' 'bb' 'z' e.p 'bc' e.s>;
+    9 e.p 'bba' e.s = <rewriteRandom 'bba' 'z' 'bb' 'z' e.p 'bba' e.s>;
+
+    t.t e.p = e.p;
+}
+
+rewriteRandom{
+    e.substring 'z' e.rewrite 'z' e.word = <rewriteRandom e.rewrite 'y' <travel 0 e.substring 'z' e.word>>;
+    e.rewrite 'y' 0 e.pref 'x' e.substring 'x' e.suff = e.pref e.rewrite e.suff
+}
+
+stop{
+    e.pref 'z' e.search 'z' 0 e.suff = 0 e.pref e.search e.suff;
+    e.pref 'z' e.search 'z' 1 e.suff = 0 e.pref 'x' e.search 'x' e.suff;
+    e.pref 'z' e.search 'z' t.count e.suff = <Sub t.count 1> e.pref e.search e.suff
+}
+
+travel{
+    t.count e.search 'z' e.pref e.search e.suff = <stop e.pref 'z' e.search 'z' <travel <Add t.count 1> e.search 'z' e.suff>>;
+    0 e.search 'z' e.word = e.word;
+    t.count e.search 'z' e.word = <Add <Mod <Mod <Random 1> 7> t.count>1> e.word
+}
+
+/*
+  Переписывание полностью рандомное при условии того, что левая часть правила SRS нигде в слове не является собственным префиксом. 
+  В нашем случае так происходит при наличии в слове подстрок aaa (правило 0) bbbbb/bbbbbb/bbbbbbb (правило 4) и cccc/ccccc(правило 6).
+  В первых двух случаях, безразлично, как выбирать слово, т.к. символы из подстроки удаляются одинаково в любом случае.
+  Для третьего я написал костыль.
+*/
+
+rewriteccc{
+
+    0 e.p 'ccccc' e.s = <rewriteRandom 'ccccc' 'z' 'ccbbb' 'z' e.p 'ccccc' e.s>;
+ 
+    1 e.p 'cccc' e.s = <rewriteRandom 'cccc' 'z' 'cbbb' 'z' e.p 'cccc' e.s>;
+    2 e.p 'ccc' e.s = <rewriteRandom 'ccc' 'z' 'bbb' 'z' e.p 'ccc' e.s>;
+
+    t.n e.p 'ccc' e.s = <rewriteRandom 'ccc' 'z' 'bbb' 'z' e.p 'ccc' e.s>
+}
+
+
+RandomWord{
+ 0 = ;
+    t.letterCount = <Pick <Mod <Random 1> 3>> <RandomWord <Sub t.letterCount 1>> 
+}
+
+Pick{
+    0 = 'a';
+    1 = 'b';
+    2 = 'c';
+}

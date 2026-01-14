@@ -1,0 +1,133 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs,array}
+\usepackage{forest}
+\usepackage[hidelinks]{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+
+\title{Лабораторная работа №1}
+\author{Чистяков Илья ИУ9-52Б}
+
+\begin{document}
+\maketitle
+
+\section*{Изначальная система переписывания}
+
+Рассматривается система переписывания строк (вариант 24), где алфавит
+\[
+\Sigma = \{a,b,c\},
+\]
+а множество правил задано следующим образом:
+\[
+\begin{aligned}
+\texttt{ aa} &\to \varepsilon\\
+\texttt{ bb} &\to \texttt{cccc}\\
+\texttt{ cc} &\to \texttt{acb}\\
+\texttt{  abc} &\to \texttt{aabbcc}\\
+\texttt{ baabaac} &\to \texttt{cbba}
+\end{aligned}
+\]
+
+
+\section*{Завершимость}
+
+Рассмотрим количество применений каждого из правил для произвольной строки. Количетво применений 4 и 5 правила конечно, так как система не может сама породить ни \texttt{abc} ни \texttt{baabaa}. Следовательно для их применения нужно использовать буквы из начальной строки, а их количество конечно. Количество применений первого и второго правила также конечно, так как строки \texttt{aa} и \texttt{bb} можно бескнечно порождать только четвертым и пятым правилом, количество применений которых, как мы выяснили, конечно. Отсюда количество применений третьего правила также конечно и вся система завершима.
+
+
+\section*{Конечность}
+
+
+Возьмём семейство слов  $w_n = (ac)^n .$ Каждое ($w_n$) принадлежит отдельному классу эквивалентности.
+
+
+
+\section*{Конфлюэнтность}
+
+Изначальная система не является конфлюэнтной ни локально, ни глобально. Это можно увидеть на примере строки 
+\texttt{ccc}:
+
+\begin{center}
+\begin{forest}
+for tree={
+  draw,
+  rounded corners,
+  align=center,
+  s sep=10mm,
+  l sep=12mm,
+  edge={-stealth, thick}, 
+}
+[ccc
+  [cacb]
+  [acbc]
+]
+\end{forest}
+\end{center}
+
+Дополним систему по алгоритму Кнута-Бендикса. Сначала введём лексикографический порядок в систему и переупорядочим правила:
+
+\[
+\begin{aligned}
+\texttt{ aa} &\to \varepsilon\\
+\texttt{ cccc} &\to \texttt{bb}\\
+\texttt{ acb} &\to \texttt{cc}\\
+\texttt{  aabbcc} &\to \texttt{abc}\\
+\texttt{ baabaac} &\to \texttt{cbba}\\
+\end{aligned}
+\]
+
+Её можно упростить до
+
+
+\[
+\begin{aligned}
+\texttt{ aa} &\to \varepsilon\\
+\texttt{ cccc} &\to \texttt{bb}\\
+\texttt{ acb} &\to \texttt{cc}\\
+\texttt{  bbcc} &\to \texttt{abc}\\
+\texttt{ cbba} &\to \texttt{bbc}\\
+\end{aligned}
+\]
+Пополняя по кнуту бендиксу получаем
+
+\[
+\begin{aligned}
+\texttt{ aa}   &\to \varepsilon\\
+\texttt{ acb}  &\to \texttt{cc}\\
+\texttt{ acc}  &\to \texttt{cb}\\
+\texttt{ cbb}  &\to \texttt{bbb}\\
+\texttt{ bbbb} &\to \texttt{bb}\\
+\texttt{ abb}  &\to \texttt{bb}\\
+\texttt{ ccc}  &\to \texttt{bbb}\\
+\texttt{ ccb}  &\to \texttt{bbb}\\
+\texttt{ bc}   &\to \texttt{bb}\\
+\texttt{ bba}  &\to \texttt{bb}\\
+\end{aligned}
+\]
+
+
+\section*{Тестирование}
+\subsection*{Фаззинг}
+
+
+В фаззинг тестировании, сгенерированное случайное слово я приводил сначало к нормальной форме в $\tau$. А после этого приводил эту нормальную форму и изначальное слово к нормальной форме в $\tau'$. Эквивалентность этих двух нормальных форм означает эквивалентность двух SRS. Несмотря на то, что цепочки переписывания в моей реализации получаются детерминированными, основную свою функцию тестирование выполняет.
+
+
+
+\subsection*{Метаморфное тестирование}
+
+В этом тестировании реализовал недетерминированные цепочки переписывания. В качестве инвариантов были выбраны две характеристики:
+
+1. Четность количества b + c в слове 
+
+2. Длина слова
+
+
+
+
+\end{document}
