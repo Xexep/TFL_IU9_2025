@@ -1,0 +1,165 @@
+$ENTRY Go {
+/*
+    Программа может не запуститься с первого раза. Дело в том, что при оптимизированном парсинге первого пула из слов маленькой длины, рефал считает,
+    что потратил нулевое время на него, а потом делит на этот ноль дальше по коду.
+
+    Это потому, что <TimeElapsed> почему-то принимает минимальное значение 0.015000, а все остальное округляет вниз.
+    Вообще, <TimeElapsed> работает странно, и недетерминированно. Например, при нескольких запусках подряд вычисления выражения ниже
+
+    =  <Prout <tiktik 250> <TimeElapsed>>
+
+    я сходу получил значения 4.750000 и 5.078000
+
+    Погрешность весомая, и, в случае сравнения времени парсеров на пуле слов, принадлежащих языку, отношение из-за этой погрешности получается всегда разное.
+    Но я попытался подобрать параметры, на которых зависимость все же прослеживается, и при этом код не работает долго.
+
+    Если прога не запустилась, надо попробовать несколько раз, либо увеличить длину слов в первом пуле.
+*/
+
+=
+<Prout <timeDifference <timecompare <wordpull2 100 1>>>>
+<Prout <timeDifference <timecompare <wordpull2 100 10>>>>
+<Prout <timeDifference <timecompare <wordpull2 100 100>>>>
+
+<Prout<fuzz 1 <wordpull1 10 100000>> <fuzz 1 <wordpull2 10 140>>>
+
+}
+
+tiktik{
+    0=;
+    t.n = <tik 25000> <tiktik <Sub t.n 1>>
+}
+tik{
+    0 = ;
+    t.n = <tik<Sub t.n 1>>
+}
+
+/*
+    Наивный парсер. Сначала проверяет, что слово в языке, пробуя сопоставить его с w1 aba w1.
+    Если подошло, проверяет, что w1 принадлежит языку W, описанному в решении лабораторной.
+*/
+parseNaive{
+    e.w 'aba' e.w = <parsew 1 'a' 'z' e.w>;
+    e.other = 0
+}
+
+parsew{    
+    1 e.wn 'z' 'a' e.word = <rememberw 1 e.wn 'z' <parsew 1 'aaab' 'z' e.word>>;
+    2 e.wn 'z' e.wn e.word = <rememberw 2 e.wn 'z' <parsew 1 <genvk e.wn> 'z' e.word>>;
+    t.n e.w 'z' = 1;
+    t.n e.w 'z' e.word = e.word;
+}
+
+rememberw{
+    e.word 'z' 1 = 1;
+    1 e.wn 'z' e.word = <parsew 2 e.wn 'z' 'a' e.word>;
+    2 e.wn 'z' e.word = e.wn e.word
+}
+
+genvk{
+    e.word = e.word 'a' e.word 'b';
+}
+
+/*
+    Эффективный парсер. В начале также сопоставляет с w1 aba w1.
+    Слово w1, принадлежащее языку W, заканчивается на b^n и содержит в конце последовательность v0...vn, где v0 = a, vk + 1 = vk a vk b.
+    Парсер сперва считает n, а после отрезает от слова справа кусок v0...vn. Получившееся слово все ещё принадлежит языку и заканчивается на b^n.
+    Время работы такого алгоритма растет линейно, в зависимости он длины строки, количества блоков v0...vn в правой части слова и количества b на конце каждого из таких блоков.
+*/
+parseEffective{
+    e.w 'aba' e.w = <parsew2 0 e.w>;
+    e.other = 0
+}
+
+parsew2{
+    t.n = 1;
+    t.n e.word 'b' = <parsew2 <Add t.n 1> e.word>;
+    t.n e.word 'a' = <parsew2 0 <checkpart <genpart t.n 'a'> 'z' <addb t.n e.word 'a'>>>;
+    e.other = 0
+}
+
+genpart{
+    0 e.w = e.w;
+    t.n e.w = e.w <genpart <Sub t.n 1> <genvk e.w> >
+}
+
+checkpart{
+    e.part 'z' e.word e.part = e.word;
+    e.other = 0
+}
+
+addb {
+    0 e.word = e.word;
+    t.n e.word = <addb <Sub t.n 1> e.word 'b'>
+}
+
+timeDifference{
+    t.ts t.t1 t.t2 = <Div <Sub t.t2 t.t1> <Sub t.t1 t.ts>>
+}
+
+timecompare{
+    e.pull =  <Timetonumber <TimeElapsed>> <Timetonumber <timecheckEffective e.pull>> <Timetonumber <timecheckNaive e.pull> <TimeElapsed>>
+}
+
+timecheckEffective{
+    t.n '' = <TimeElapsed>;
+    t.n (e.word) e.pull= <timecheckEffective <parseEffective e.word> e.pull>
+}
+
+timecheckNaive{
+    t.n '' = <TimeElapsed>;
+    t.n (e.word) e.pull= <timecheckNaive <parseNaive e.word> e.pull>
+}
+
+fuzz{
+    1 '' = 1;
+    1 (e.word) e.pull = <fuzz <testcheck <parseNaive e.word> <parseEffective e.word>> e.pull>;
+    0 e.pull = 0
+}
+
+testcheck{
+    1 1 = 1;
+    0 0 = 1;
+    e.other = 0;
+}
+
+wordpull1{
+    0 e.word = ;
+    t.k t.n = (<RandomWord t.n>) <wordpull1 <Sub t.k 1> t.n>
+}
+
+wordpull2{
+    0 e.word = ;
+    t.k t.n = (<genword t.n>) <wordpull2 <Sub t.k 1> t.n>
+}
+
+Timetonumber{
+    e.1 '.' e.other = <Add <Mul <Numb e.1> 1000000> <Numb e.other>>
+}
+
+genword{
+    t.steps = <genaba <genw1 t.steps>>;
+}
+
+genaba{
+    e.w1 = e.w1 'aba' e.w1
+}
+
+/*
+    Для того, чтобы, при сравнении времени работы, создавать пул с линейной зависимостью длины слова от n, рандомайзер в функции ниже можно заменить на константу, например 4.
+    От недетерминированности <TimeElapsed> при проверке это никак, к сожалению, не спасет, и время работы на полностью одинаковых пулах всегда разное
+*/
+genw1{
+    0 = '';
+    t.n =  <genpart <Mod <Mod <Random 1>7> 20>  /*4*/ 'a' >  <genw1 <Sub t.n 1>>
+}
+
+RandomWord{
+ 0 = ;
+    t.letterCount = <Pick <Mod <Mod <Random 1> 7> 2>> <RandomWord <Sub t.letterCount 1>> 
+}
+
+Pick{
+    0 = 'a';
+    1 = 'b';
+}
