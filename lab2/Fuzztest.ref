@@ -1,0 +1,317 @@
+$ENTRY Go{
+    = <Prout <regular 0 ''>> <Prout <dka 1 ''>> <Prout <nka 0 ''>> <Prout <pka 0 ''>>
+     <Prout <FuzztestLWord 1 100 40>  <Prout <FuzztestRandomWord 1 100 80>>>
+}
+
+checkresult {
+    1 1 1 1 = 1;
+    0 0 0 0 = 1;
+    e.other = 0;
+}
+
+test1{
+    e.word = <Prout e.word \n> <checkresult <regular 0 e.word>  <dka 1 e.word> <nka 0 e.word> <pka S e.word>>
+}
+
+FuzztestLWord{
+    0 t.count e.other = <Prout 'failed'> 0;
+    t.passed 0 t.steps = 'Lword Fuzz Passed\n';
+    t.passed t.count t.steps = <Prout t.count> <FuzztestLWord <Mul t.passed <test1 <createrandomLword t.steps>>> <Sub t.count 1> t.steps>
+}
+createrandomLword {
+    t.steps = <createprefix <Mod <Random 1> t.steps> > <createmiddle> <createprefix <Sub t.steps <Mod <Random 1> t.steps> >>
+}
+
+createaba_bab_aabb{
+    0 = 'aba';
+    1 = 'bab';
+    2 = 'aabb';
+}
+
+createprefix{
+    0 e.word = e.word;
+    t.steps e.word = <createprefix <Sub t.steps 1> <createaba_bab_aabb <Mod <Random 1> 3>> e.word>
+}
+
+createmiddle { /*тут беру сначала по модулю 7, а потом уже по 2, так как рефал в один момент начал генерировать только нечетные числа*/
+     = <Pick <Mod <Mod <Random 1> 7> 2>> <Pick <Mod <Mod <Random 1>7> 2>> 'bba';
+}
+
+
+FuzztestRandomWord{
+    0 t.count e.other = <Prout 'failed'> 0;
+    t.passed 0 t.len = 'Random Word Fuzz Passed';
+    t.passed t.count t.len = <Prout t.count> <FuzztestRandomWord <Mul t.passed <test1 <RandomWord t.len>>> <Sub t.count 1> t.len>
+}
+
+
+RandomWord{
+ 0 = ;
+    t.letterCount =  <Pick <Mod <Random 1> 2>> <RandomWord <Sub t.letterCount 1>> 
+}
+
+Pick{
+    0 = 'a';
+    1 = 'b';
+}
+
+
+dka {
+  4  = 1;  5  = 1;  6  = 1;  14 = 1;  16 = 1;
+  17 = 1;  19 = 1;  20 = 1;  22 = 1;  23 = 1;
+
+
+  1  'a' e.word = <dka 25 e.word>;
+  1  'b' e.word = <dka 27 e.word>;
+
+  2  'b' e.word = <dka 4  e.word>;
+
+  3  'a' e.word = <dka 28 e.word>;
+  3  'b' e.word = <dka 6  e.word>;
+
+  4  'a' e.word = <dka 39 e.word>;
+  4  'b' e.word = <dka 40 e.word>;
+
+  5  'a' e.word = <dka 7  e.word>;
+  5  'b' e.word = <dka 8  e.word>;
+
+  6  'a' e.word = <dka 9  e.word>;
+  6  'b' e.word = <dka 10 e.word>;
+
+  7  'a' e.word = <dka 42 e.word>;
+  7  'b' e.word = <dka 11 e.word>;
+
+  8  'a' e.word = <dka 2  e.word>;
+  8  'b' e.word = <dka 33 e.word>;
+
+  9  'a' e.word = <dka 12 e.word>;
+  9  'b' e.word = <dka 13 e.word>;
+
+  10 'a' e.word = <dka 2  e.word>;
+  10 'b' e.word = <dka 36 e.word>;
+
+  11 'a' e.word = <dka 14 e.word>;
+  11 'b' e.word = <dka 13 e.word>;
+
+  12 'a' e.word = <dka 28 e.word>;
+  12 'b' e.word = <dka 15 e.word>;
+
+  13 'a' e.word = <dka 16 e.word>;
+  13 'b' e.word = <dka 31 e.word>;
+
+  14 'a' e.word = <dka 37 e.word>;
+  14 'b' e.word = <dka 38 e.word>;
+
+  15 'a' e.word = <dka 1  e.word>;
+  15 'b' e.word = <dka 17 e.word>;
+
+  16 'a' e.word = <dka 39 e.word>;
+  16 'b' e.word = <dka 41 e.word>;
+
+  17 'a' e.word = <dka 39 e.word>;
+  17 'b' e.word = <dka 18 e.word>;
+
+  18 'a' e.word = <dka 19 e.word>;
+
+  19 'a' e.word = <dka 39 e.word>;
+  19 'b' e.word = <dka 20 e.word>;
+
+  20 'a' e.word = <dka 21 e.word>;
+  20 'b' e.word = <dka 40 e.word>;
+
+  21 'a' e.word = <dka 42 e.word>;
+  21 'b' e.word = <dka 22 e.word>;
+
+  22 'a' e.word = <dka 23 e.word>;
+  22 'b' e.word = <dka 40 e.word>;
+
+  23 'a' e.word = <dka 24 e.word>;
+  23 'b' e.word = <dka 18 e.word>;
+
+  24 'a' e.word = <dka 42 e.word>;
+  24 'b' e.word = <dka 26 e.word>;
+
+  25 'a' e.word = <dka 28 e.word>;
+  25 'b' e.word = <dka 29 e.word>;
+
+  26 'a' e.word = <dka 4  e.word>;
+  26 'b' e.word = <dka 4  e.word>;
+
+  27 'a' e.word = <dka 30 e.word>;
+  27 'b' e.word = <dka 31 e.word>;
+
+  28 'b' e.word = <dka 32 e.word>;
+
+  29 'a' e.word = <dka 1  e.word>;
+  29 'b' e.word = <dka 33 e.word>;
+
+  30 'b' e.word = <dka 34 e.word>;
+
+  31 'b' e.word = <dka 33 e.word>;
+
+  32 'b' e.word = <dka 35 e.word>;
+
+  33 'b' e.word = <dka 36 e.word>;
+
+  34 'a' e.word = <dka 25 e.word>;
+  34 'b' e.word = <dka 13 e.word>;
+
+  35 'a' e.word = <dka 14 e.word>;
+  35 'b' e.word = <dka 27 e.word>;
+
+  36 'a' e.word = <dka 4  e.word>;
+
+  37 'a' e.word = <dka 42 e.word>;
+  37 'b' e.word = <dka 43 e.word>;
+
+  38 'a' e.word = <dka 44 e.word>;
+  38 'b' e.word = <dka 33 e.word>;
+
+  39 'a' e.word = <dka 42 e.word>;
+  39 'b' e.word = <dka 36 e.word>;
+
+  40 'a' e.word = <dka 2  e.word>;
+  /*40 'b' e.word = <dka 2  e.word>;*/
+
+  41 'a' e.word = <dka 3  e.word>;
+  41 'b' e.word = <dka 13 e.word>;
+
+  42 'b' e.word = <dka 2  e.word>;
+
+  43 'a' e.word = <dka 4  e.word>;
+  43 'b' e.word = <dka 35 e.word>;
+
+  44 'a' e.word = <dka 25 e.word>;
+  44 'b' e.word = <dka 5  e.word>;
+
+
+  e.other = 0;
+}
+
+
+
+OptimizedORNKA { /*не могу сказать, насколько он на самом деле оптимален, но это лучше, чем вычислять каждый из возможных переходов до конца, когда уже понятно, что слово распознается*/
+  1 e.rest = 1;
+  0 e.word 'z' t.q e.other = <OptimizedORNKA <nka t.q e.word> e.word 'z' e.other>;
+  0 e.word 'z' = 0
+}
+
+
+nka {
+  8 = 1;
+
+  0 'a' e.word = <nka 1 e.word>;
+  0 'b' e.word = <nka 2 e.word>;
+
+  1 'a' e.word = <OptimizedORNKA 0 e.word 'z' 4 6>;
+  1 'b' e.word = <OptimizedORNKA 0 e.word 'z' 3 6>;
+
+  2 'a' e.word = <OptimizedORNKA 0 e.word 'z' 5 6>;
+  2 'b' e.word = <nka 6 e.word>;
+
+  3 'a' e.word = <nka 0 e.word>;
+
+  4 'b' e.word = <nka 5 e.word>;
+
+  5 'b' e.word = <nka 0 e.word>;
+
+  6 'b' e.word = <nka 7 e.word>;
+
+  7 'b' e.word = <nka 9 e.word>;
+
+  9 'a' e.word = <nka 8 e.word>;
+
+  8 'a' e.word = <nka 10 e.word>;
+  8 'b' e.word = <nka 11 e.word>;
+
+  10 'a' e.word = <nka 12 e.word>;
+  10 'b' e.word = <nka 9 e.word>;
+
+  11 'a' e.word = <nka 13 e.word>;
+
+  12 'b' e.word = <nka 13 e.word>;
+
+  13 'b' e.word = <nka 8 e.word>;
+
+  e.other = 0;
+}
+
+
+OptimizedORPKA {
+  1 e.rest = 1;
+  0 e.word 'z' t.q e.other = <OptimizedORPKA <pka t.q e.word> e.word 'z' e.other>;
+  0 e.word 'z' = 0
+}
+
+
+pka {
+  8  = 1;
+  17 = 1;
+
+  S e.word = <Mul <pka 0 e.word> <pka 14 e.word>>;
+
+  0 'a' e.word = <pka 1 e.word>;
+  0 'b' e.word = <pka 2 e.word>;
+
+  1 'a' e.word = <OptimizedORPKA 0 e.word 'z' 4 6>;
+  1 'b' e.word = <OptimizedORPKA 0 e.word 'z' 3 6>;
+
+  2 'a' e.word = <OptimizedORPKA 0 e.word 'z' 5 6>;
+  2 'b' e.word = <pka 6 e.word>;
+
+  3 'a' e.word = <pka 0 e.word>;
+
+  4 'b' e.word = <pka 5 e.word>;
+
+  5 'b' e.word = <pka 0 e.word>;
+
+  6 'b' e.word = <pka 7 e.word>;
+
+  7 'b' e.word = <pka 9 e.word>;
+
+  9 'a' e.word = <pka 8 e.word>;
+
+  8 'a' e.word = <pka 10 e.word>;
+  8 'b' e.word = <pka 11 e.word>;
+
+  10 'a' e.word = <pka 12 e.word>;
+  10 'b' e.word = <pka 9 e.word>;
+
+  11 'a' e.word = <pka 13 e.word>;
+
+  12 'b' e.word = <pka 13 e.word>;
+
+  13 'b' e.word = <pka 8 e.word>;
+
+  14 'a' e.word = <OptimizedORPKA 0 e.word 'z' 14 15>;
+  14 'b' e.word = <OptimizedORPKA 0 e.word 'z' 14 15>;
+
+  15 'a' e.word = <pka 16 e.word>;
+  15 'b' e.word = <pka 16 e.word>;
+
+  16 'b' e.word = <pka 18 e.word>;
+
+  18 'b' e.word = <pka 19 e.word>;
+
+  19 'a' e.word = <pka 17 e.word>;
+
+  17 'a' e.word = <pka 17 e.word>;
+  17 'b' e.word = <pka 17 e.word>;
+
+  e.other = 0;
+}
+
+regular{ /*Задача здесь решена для частного случая регулярки, но, как я понял, решения в общем виде и не требовалось*/
+    1 e.word = 1;
+    0 e.prefix 'z' e.midlle s.a s.b 'bba' e.suffix = <regular <Mul <aba_bab_aabb e.prefix e.midlle> <aba_bab_aabb e.suffix>>  e.prefix e.midlle s.a s.b 'bzba' e.suffix>;
+    0 e.prefix s.a s.b 'bba' e.suffix = <regular <Mul <aba_bab_aabb e.prefix> <aba_bab_aabb e.suffix>> e.prefix s.a s.b 'bzba' e.suffix>;
+    0 e.other = 0;
+}
+
+aba_bab_aabb{
+    = 1 ;
+    'aba' e.suffix = <aba_bab_aabb e.suffix>;
+    'bab' e.suffix = <aba_bab_aabb e.suffix>;
+    'aabb' e.suffix = <aba_bab_aabb e.suffix>;
+    e.other = 0;
+}
